@@ -3,6 +3,7 @@
 export ROOT=`pwd`
 export NCORES=`sysctl -n hw.ncpu`
 export CMAKE_INSTALLED=`which cmake`
+export ARCH=$(uname -m)
 
 # Check if CMake is installed
 if [[ -z "$CMAKE_INSTALLED" ]]
@@ -11,17 +12,27 @@ then
     exit -1
 fi
 
-while getopts ":ih" opt; do
+while getopts ":iaxh" opt; do
   case ${opt} in
     i )
         export BUILD_IMAGE="1"
         ;;
+    a )
+        export ARCH="arm64"
+        ;;
+    x )
+        export ARCH="x86_64"
+        ;;
     h ) echo "Usage: ./BuildMacOS.sh [-i]"
         echo "   -i: Generate DMG image (optional)"
+        echo "   -a: Build for arm64 (Apple Silicon)"
+        echo "   -x: Build for x86_64 (Intel)"
         exit 0
         ;;
   esac
 done
+
+echo "Build architecture: ${ARCH}"
 
 # mkdir build
 if [ ! -d "build" ]
@@ -56,7 +67,7 @@ echo -n "[3/9] Configuring dependencies..."
 {
     # cmake deps
     pushd deps/build
-    cmake .. -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13"
+    cmake .. -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13" -DCMAKE_OSX_ARCHITECTURES:STRING="$ARCH"
 } &> $ROOT/build/Build.log # Capture all command output
 echo "done"
 
@@ -88,7 +99,7 @@ echo -n "[7/9] Configuring Slic3r..."
 {
     # cmake
     pushd build
-    cmake .. -DCMAKE_PREFIX_PATH="$PWD/../deps/build/destdir/usr/local" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13" -DSLIC3R_STATIC=1
+    cmake .. -DCMAKE_PREFIX_PATH="$PWD/../deps/build/destdir/usr/local" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13" -DSLIC3R_STATIC=1 -DCMAKE_OSX_ARCHITECTURES:STRING="$ARCH"
 } &> $ROOT/build/Build.log # Capture all command output
 echo "done"
 

@@ -27,6 +27,7 @@ ExternalProject_Add(dep_tbb
         -DTBB_BUILD_TESTS=OFF
         -DCMAKE_CXX_FLAGS=${TBB_MINGW_WORKAROUND}
         -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
         ${DEP_CMAKE_OPTS}
 )
 
@@ -34,7 +35,10 @@ ExternalProject_Add(dep_gtest
     EXCLUDE_FROM_ALL 1
     URL "https://github.com/google/googletest/archive/release-1.8.1.tar.gz"
     URL_HASH SHA256=9bf1fe5182a604b4135edc1a425ae356c9ad15e9b23f9f12a02e80184c3a249c
-    CMAKE_ARGS -DBUILD_GMOCK=OFF ${DEP_CMAKE_OPTS} -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+    CMAKE_ARGS
+        -DBUILD_GMOCK=OFF ${DEP_CMAKE_OPTS}
+        -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
 )
 
 ExternalProject_Add(dep_cereal
@@ -44,6 +48,7 @@ ExternalProject_Add(dep_cereal
     CMAKE_ARGS
         -DJUST_INSTALL_CEREAL=on
         -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
         ${DEP_CMAKE_OPTS}
 )
 
@@ -58,6 +63,7 @@ ExternalProject_Add(dep_nlopt
         -DNLOPT_MATLAB=OFF
         -DNLOPT_GUILE=OFF
         -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
         ${DEP_CMAKE_OPTS}
 )
 
@@ -70,6 +76,7 @@ ExternalProject_Add(dep_qhull
     CMAKE_ARGS
         -DBUILD_SHARED_LIBS=OFF
         -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
         ${DEP_CMAKE_OPTS}
 )
 
@@ -88,6 +95,7 @@ ExternalProject_Add(dep_blosc
         -DBUILD_TESTS=OFF 
         -DBUILD_BENCHMARKS=OFF 
         -DPREFER_EXTERNAL_ZLIB=ON
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
     PATCH_COMMAND       ${GIT_EXECUTABLE} reset --hard && git clean -df && 
                         ${GIT_EXECUTABLE} apply --whitespace=fix ${CMAKE_CURRENT_SOURCE_DIR}/blosc-mods.patch
 )
@@ -104,6 +112,7 @@ ExternalProject_Add(dep_openexr
         -DPYILMBASE_ENABLE:BOOL=OFF 
         -DOPENEXR_VIEWERS_ENABLE:BOOL=OFF
         -DOPENEXR_BUILD_UTILS:BOOL=OFF
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
 )
 
 ExternalProject_Add(dep_openvdb
@@ -124,6 +133,7 @@ ExternalProject_Add(dep_openvdb
         -DTBB_STATIC=ON
         -DOPENVDB_BUILD_VDB_PRINT=ON
         -DDISABLE_DEPENDENCY_VERSION_CHECKS=ON
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
     PATCH_COMMAND PATCH_COMMAND     ${GIT_EXECUTABLE} checkout -f -- . && git clean -df && 
                                     ${GIT_EXECUTABLE} apply --whitespace=fix ${CMAKE_CURRENT_SOURCE_DIR}/openvdb-mods.patch
 )

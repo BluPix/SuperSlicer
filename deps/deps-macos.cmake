@@ -15,6 +15,12 @@ set(DEP_CMAKE_OPTS
 
 include("deps-unix-common.cmake")
 
+if (${CMAKE_OSX_ARCHITECTURES} MATCHES "arm")
+    set(_arch_flags "-arch arm64")
+elseif (${CMAKE_OSX_ARCHITECTURES} MATCHES "x86_64")
+    set(_arch_flags "-arch x86_64")
+endif()
+
 
 ExternalProject_Add(dep_boost
     EXCLUDE_FROM_ALL 1
@@ -33,10 +39,11 @@ ExternalProject_Add(dep_boost
         variant=release
         threading=multi
         boost.locale.icu=off
-        "cflags=-fPIC -mmacosx-version-min=${DEP_OSX_TARGET}"
-        "cxxflags=-fPIC -mmacosx-version-min=${DEP_OSX_TARGET}"
-        "mflags=-fPIC -mmacosx-version-min=${DEP_OSX_TARGET}"
-        "mmflags=-fPIC -mmacosx-version-min=${DEP_OSX_TARGET}"
+        "cflags=-fPIC ${_arch_flags} -mmacosx-version-min=${DEP_OSX_TARGET}"
+        "cxxflags=-fPIC ${_arch_flags} -mmacosx-version-min=${DEP_OSX_TARGET}"
+        "mflags=-fPIC ${_arch_flags} -mmacosx-version-min=${DEP_OSX_TARGET}"
+        "mmflags=-fPIC ${_arch_flags} -mmacosx-version-min=${DEP_OSX_TARGET}"
+        "linkflags=${_arch_flags}"
         install
     INSTALL_COMMAND ""   # b2 does that already
 )
@@ -46,7 +53,7 @@ ExternalProject_Add(dep_libcurl
     URL "https://curl.haxx.se/download/curl-7.58.0.tar.gz"
     URL_HASH SHA256=cc245bf9a1a42a45df491501d97d5593392a03f7b4f07b952793518d97666115
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ./configure
+    CONFIGURE_COMMAND env "CFLAGS=${_arch_flags}" ./configure
         --enable-static
         --disable-shared
         "--with-ssl=${DESTDIR}/usr/local"

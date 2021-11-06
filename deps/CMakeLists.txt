@@ -79,6 +79,7 @@ if (MSVC)
             -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
             -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
             -DBUILD_SHARED_LIBS:BOOL=OFF
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             "${_configs_line}"
             ${DEP_CMAKE_OPTS}
             ${P_ARGS_CMAKE_ARGS}
@@ -181,6 +182,7 @@ if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
         DEPENDS dep_boost
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
+        CMAKE_ARGS -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
         INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CMAKE_CURRENT_BINARY_DIR}/dep_boost_polygon-prefix/src/dep_boost_polygon/include/boost/polygon"
             "${DESTDIR}/usr/local/include/boost/polygon"
