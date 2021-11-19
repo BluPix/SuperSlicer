@@ -15,12 +15,20 @@ set(DEP_CMAKE_OPTS
 
 include("deps-unix-common.cmake")
 
-if (${CMAKE_OSX_ARCHITECTURES} MATCHES "arm")
-    set(_arch_flags "-arch arm64")
-elseif (${CMAKE_OSX_ARCHITECTURES} MATCHES "x86_64")
-    set(_arch_flags "-arch x86_64")
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+    set(_build_arch aarch64)
+elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+    set(_build_arch x86_64)
 endif()
 
+if (${CMAKE_OSX_ARCHITECTURES} MATCHES "arm")
+    set(_host_arch aarch64)
+    set(_arch_flags "-arch arm64")
+elseif (${CMAKE_OSX_ARCHITECTURES} MATCHES "x86_64")
+    set(_host_arch x86_64)
+    set(_arch_flags "-arch x86_64")
+endif()
+set(_build_tgt --build=${_build_arch}-apple-darwin --host=${_host_arch}-apple-darwin)
 
 ExternalProject_Add(dep_boost
     EXCLUDE_FROM_ALL 1
@@ -54,6 +62,7 @@ ExternalProject_Add(dep_libcurl
     URL_HASH SHA256=cc245bf9a1a42a45df491501d97d5593392a03f7b4f07b952793518d97666115
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND env "CFLAGS=${_arch_flags}" ./configure
+        ${_build_tgt}
         --enable-static
         --disable-shared
         "--with-ssl=${DESTDIR}/usr/local"
