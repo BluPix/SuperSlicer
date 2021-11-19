@@ -100,10 +100,20 @@ ExternalProject_Add(dep_blosc
                         ${GIT_EXECUTABLE} apply --whitespace=fix ${CMAKE_CURRENT_SOURCE_DIR}/blosc-mods.patch
 )
 
+# Check if we're building for arm on x86_64 and just for OpenEXR, build fat
+# binaries.  We need this because it compiles some code to generate other
+# source and we need to be able to run the executables.  When we link the
+# library, the x86_64 part will be ignored.
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64" AND ${CMAKE_OSX_ARCHITECTURES} MATCHES "arm")
+        set(_openexr_arch arm64^^x86_64)
+else()
+        set(_openexr_arch ${CMAKE_OSX_ARCHITECTURES})
+endif()
 ExternalProject_Add(dep_openexr
     EXCLUDE_FROM_ALL 1
     GIT_REPOSITORY https://github.com/openexr/openexr.git
     GIT_TAG eae0e337c9f5117e78114fd05f7a415819df413a #v2.4.0 
+    LIST_SEPARATOR ^^
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr/local
         -DBUILD_SHARED_LIBS=OFF
@@ -112,7 +122,7 @@ ExternalProject_Add(dep_openexr
         -DPYILMBASE_ENABLE:BOOL=OFF 
         -DOPENEXR_VIEWERS_ENABLE:BOOL=OFF
         -DOPENEXR_BUILD_UTILS:BOOL=OFF
-        -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
+        -DCMAKE_OSX_ARCHITECTURES:STRING=${_openexr_arch}
 )
 
 ExternalProject_Add(dep_openvdb
