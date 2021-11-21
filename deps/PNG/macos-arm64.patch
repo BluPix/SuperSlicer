@@ -1,4 +1,4 @@
-Based on from https://github.com/vespakoen/libpng to work around until
+Based on https://github.com/vespakoen/libpng to work around until
 https://github.com/glennrp/libpng/pull/354 is resolved.
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
