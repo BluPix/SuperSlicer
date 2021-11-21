@@ -9,6 +9,8 @@ prusaslicer_add_cmake_project(PNG
     GIT_REPOSITORY https://github.com/glennrp/libpng.git 
     GIT_TAG v1.6.35
     DEPENDS ${ZLIB_PKG}
+    PATCH_COMMAND       ${GIT_EXECUTABLE} checkout -f -- . && git clean -df &&
+                      ${GIT_EXECUTABLE} apply --whitespace=fix ${CMAKE_CURRENT_LIST_DIR}/macos-arm64.patch
     CMAKE_ARGS
         -DPNG_SHARED=OFF
         -DPNG_STATIC=ON
