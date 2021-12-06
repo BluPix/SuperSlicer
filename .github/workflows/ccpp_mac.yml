@@ -28,7 +28,6 @@ jobs:
       
     - name: BuildMacOS arm64
       run: ./BuildMacOS.sh -ix
-
 #    - name: signing Resources (creating CodeResources inside _CodeSignature)
 #      working-directory: .
 #      run: codesign -s <identity> Resources
