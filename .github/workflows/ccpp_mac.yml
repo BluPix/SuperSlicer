@@ -23,6 +23,23 @@ jobs:
       run: |
         sed "s/+UNKNOWN/_$(date '+%F')/" version.inc > version.date.inc
         mv version.date.inc version.inc
+
+    - name: BuildMacOS arm64
+      run: ./BuildMacOS.sh -ix
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: nightly_macos_arm64.tar
+        path: build/SuperSlicer.tar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: nightly_macos_arm64.dmg
+        path: build/SuperSlicer.dmg
+
+    - name: clean
+      run: rm -rf build ; rm -rf deps/build
+
     - name: BuildMacOS amd64
       run: ./BuildMacOS.sh -ia
 
@@ -37,18 +54,6 @@ jobs:
         name: nightly_macos_amd64.dmg
         path: build/SuperSlicer.dmg
 
-    - name: clean
-      run: make clean
 
-    - name: BuildMacOS arm64
-      run: ./BuildMacOS.sh -ix
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: nightly_macos_arm64.tar
-        path: build/SuperSlicer.tar
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: nightly_macos_arm64.dmg
-        path: build/SuperSlicer.dmg
+
+
