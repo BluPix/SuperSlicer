@@ -25,20 +25,30 @@ jobs:
         mv version.date.inc version.inc
     - name: BuildMacOS amd64
       run: ./BuildMacOS.sh -ia
-      
-    - name: BuildMacOS arm64
-      run: ./BuildMacOS.sh -ix
-#    - name: signing Resources (creating CodeResources inside _CodeSignature)
-#      working-directory: .
-#      run: codesign -s <identity> Resources
-# maybe i should just try to do that on a separate pc and copy the file here, more secure as a signing process.
+
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: nightly_macos.tar
+        name: nightly_macos_amd64.tar
         path: build/SuperSlicer.tar
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: nightly_macos.dmg
+        name: nightly_macos_amd64.dmg
+        path: build/SuperSlicer.dmg
+
+    - name: clean
+      run: make clean
+
+    - name: BuildMacOS arm64
+      run: ./BuildMacOS.sh -ix
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: nightly_macos_arm64.tar
+        path: build/SuperSlicer.tar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: nightly_macos_arm64.dmg
         path: build/SuperSlicer.dmg
